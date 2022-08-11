@@ -1,4 +1,4 @@
-from dcs_common import *
+#from dcs_common import *
 
 if starting:   
 	global mouse_sensitivity, sensitivity_center_reduction
@@ -7,17 +7,17 @@ if starting:
 	# =============================================================================================
 	# //////////////////////////////////////// SETTINGS ///////////////////////////////////////////
 	# =============================================================================================
-	mouse_StickSensitivity = 1
-	mouse_LookSensitivity = 0.7
-	enable_freelook = True 		#Change to False if you want to disable free look
+	mouse_StickSensitivity = 2
+	mouse_LookSensitivity = 1.5
+	enable_freelook = True
 	
 	offsetSteer_x = 0
-	offsetSteer_y = 0	
+	offsetSteer_y = 0	#6400 for a 10
 	offsetLook_x = 0
-	offsetLook_y = 0	
+	offsetLook_y = 0		#-800 for a 10
 	
-	stick_recenterSpeed = 10	#0 to disable recentering
-	look_recenterSpeed = 200
+	stick_recenterSpeed = 15	#0 to disable recentering
+	look_recenterSpeed = 130
 	
 	DeviceNumber = 0 			#Counting starts from 0 so, 0 means device 1, 1 means device 2, etc.
 	#==============================================================================================
@@ -41,7 +41,7 @@ if starting:
 	sensitivity_center_reduction = 0.1
 	switch = False
 	active = True
-	freeLook=False
+	freeLook= False
 	stickSteering = True
 	thorttle_enable = True
 	v = vJoy[DeviceNumber]
@@ -50,6 +50,7 @@ if starting:
 	v.rx = offsetLook_x
 	v.ry = offsetLook_y
 	v.rz = 0
+	
 	
 	def set_button(button, key):
 		if keyboard.getKeyDown(key):
@@ -84,11 +85,11 @@ if starting:
 # steering logic
 # =================================================================================================
 #freelook switching
-freeLookHold = keyboard.getKeyDown(Key.LeftAlt)
+freeLookHold = keyboard.getKeyDown(Key.LeftControl)#keyboard.getKeyDown(Key.LeftAlt)
 freeLookToggle = keyboard.getPressed(Key.Grave)
 throttleToggle = keyboard.getPressed(Key.PrintScreen)
 
-if is_dcs_active():
+if True:
 	if active:
 		if keyboard.getKeyDown(Key.NumberPad5):
 			steering_y = 0
@@ -140,7 +141,19 @@ if is_dcs_active():
 			if(enable_freelook==True):
 				v.rx = int(round(steering_x))
 				v.ry = int(round(steering_y))
-
+				
+				mouse_deadzone = 0
+				
+				if mouse.deltaX > mouse_deadzone:
+					keyboard.setPressed(Key.RightArrow)
+				elif mouse.deltaX < -mouse_deadzone:
+					keyboard.setPressed(Key.LeftArrow)
+					
+				if mouse.deltaY > mouse_deadzone:
+					keyboard.setPressed(Key.UpArrow)
+				elif mouse.deltaY < -mouse_deadzone:
+					keyboard.setPressed(Key.DownArrow)
+					
 			v.x=recenter(v.x, stick_recenterSpeed, offsetSteer_x)
 			v.y=recenter(v.y, stick_recenterSpeed, offsetSteer_y)
 
@@ -170,14 +183,15 @@ if is_dcs_active():
 	if freeLookHold and mouse.wheelDown and v.rz<15000:
 		v.rz += 1500
 
-	if(freeLookToggle):
+	if freeLookToggle:
 		freeLook = not freeLook
-		user32.SetCursorPos(1920/2, 1080/2)
 
 	if freeLookHold or freeLook:
 		stickSteering = False
 	else:
 		stickSteering= True
+
+	
 
 	if(keyboard.getPressed(Key.ScrollLock)):
 		freeLook = False
@@ -186,7 +200,7 @@ if is_dcs_active():
 		steering_x=offsetSteer_x
 		steering_y=offsetSteer_y
 
-	if(keyboard.getPressed(Key.F10) or keyboard.getPressed(Key.Escape)):
+	if keyboard.getPressed(Key.F10):
 		active = not active
 
 	if(keyboard.getPressed(Key.F1)):
@@ -205,4 +219,4 @@ diagnostics.watch(freeLook)
 diagnostics.watch(stickSteering)
 diagnostics.watch(thorttle_enable)
 diagnostics.watch(active)
-diagnostics.watch(get_active_window_name())
+#diagnostics.watch(get_active_window_name())

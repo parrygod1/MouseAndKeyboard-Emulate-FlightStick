@@ -1,0 +1,9 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "run freepie",
+        "command": "D:\\Programs\\Controller\\freepie\\freepie.exe", // Could be any other shell command
+        "args": ["${file}"],
+        "type": "process"
+    }]
+}

@@ -1,0 +1,13 @@
+{
+    "mouse_StickSensitivity": 1.7,
+    "mouse_LookSensitivity": 1.5,
+    "enable_freelook": true,
+    "offsetSteer_x": 0,
+    "offsetSteer_y": 350,
+    "offsetLook_x": 0,
+    "offsetLook_y": 0,
+    "stick_recenterSpeed": 30,
+    "look_recenterSpeed": 130,
+    "DeviceNumber": 0,
+    "window_name": "Digital Combat Simulator"
+}
