@@ -6,21 +6,6 @@ if starting:
 	from mouse_flight_common import *
 	settings_profile = import_json(profile_path + profile_name)
 
-	mouse_StickSensitivity = settings_profile["mouse_StickSensitivity"]
-	mouse_LookSensitivity = settings_profile["mouse_LookSensitivity"]
-	enable_freelook = settings_profile["enable_freelook"]
-
-	offsetSteer_x = settings_profile["offsetSteer_x"]
-	offsetSteer_y = settings_profile["offsetSteer_y"]
-	offsetLook_x = settings_profile["offsetLook_x"]
-	offsetLook_y = settings_profile["offsetLook_y"]
-
-	stick_recenterSpeed = settings_profile["stick_recenterSpeed"]
-	look_recenterSpeed = settings_profile["look_recenterSpeed"]
-	
-	DeviceNumber = settings_profile["DeviceNumber"]	#0 means device 1, 1 means device 2, etc.
-	window_name = settings_profile["window_name"]
-
 	switch = False
 	active = True
 	freeLook= True
@@ -41,11 +26,11 @@ if starting:
 	steering_center_reduction_ly=1.0
 	sensitivity_center_reduction = 0.1
 	
-	v = vJoy[DeviceNumber]
-	v.x = offsetSteer_x
-	v.y = offsetSteer_y
-	v.rx = offsetLook_x
-	v.ry = offsetLook_y
+	v = vJoy[settings_profile["DeviceNumber"]] #0 means device 1, 1 means device 2, etc.
+	v.x = settings_profile["offsetSteer_x"]
+	v.y = settings_profile["offsetSteer_y"]
+	v.rx = settings_profile["offsetLook_x"]
+	v.ry = settings_profile["offsetLook_y"]
 	v.rz = 0
 
 	system.setThreadTiming(TimingTypes.HighresSystemTimer)
@@ -90,11 +75,10 @@ freeLookToggle = keyboard.getPressed(Key.Grave)
 throttleToggle = keyboard.getPressed(Key.PrintScreen)
 stickHold = mouse.getButton(2)
 
-if is_window_active(window_name):
-	
+settings_profile = reload_json_changes(settings_profile, profile_path + profile_name)
 
+if is_window_active(settings_profile["window_name"]):
 	if active:
-
 		if steering_x > 0:
 			steering_center_reduction = sensitivity_center_reduction ** (1 - (steering_x / steering_max))
 		elif steering_x < 0:
@@ -117,7 +101,7 @@ if is_window_active(window_name):
 
 
 		if stickSteering and not slewHold:
-			mouse_sensitivity=mouse_StickSensitivity
+			mouse_sensitivity=settings_profile["mouse_StickSensitivity"]
 			if(switch==True):
 				steering_x=v.x
 				steering_y=v.y
@@ -126,26 +110,26 @@ if is_window_active(window_name):
 			v.x = int(round(steering_x))
 			v.y= int(round(steering_y))
 
-			v.rx=recenter(v.rx,look_recenterSpeed,offsetLook_x)
-			v.ry=recenter(v.ry,look_recenterSpeed,offsetLook_y)
+			v.rx=recenter(v.rx,settings_profile["look_recenterSpeed"],settings_profile["offsetLook_x"])
+			v.ry=recenter(v.ry,settings_profile["look_recenterSpeed"],settings_profile["offsetLook_y"])
 			
 			if do_recenter:
-				steering_x=recenter(steering_x,stick_recenterSpeed, offsetSteer_x)
-				steering_y=recenter(steering_y,stick_recenterSpeed, offsetSteer_y)
+				steering_x=recenter(steering_x,settings_profile["stick_recenterSpeed"], settings_profile["offsetSteer_x"])
+				steering_y=recenter(steering_y,settings_profile["stick_recenterSpeed"], settings_profile["offsetSteer_y"])
 		elif not stickSteering and not slewHold:
-			mouse_sensitivity=mouse_LookSensitivity
+			mouse_sensitivity=settings_profile["mouse_LookSensitivity"]
 			if(switch==False):
 				steering_x=v.rx
 				steering_y=v.ry
 			switch=True
 
-			if(enable_freelook==True):
+			if(settings_profile["enable_freelook"]==True):
 				v.rx = int(round(steering_x))
 				v.ry = int(round(steering_y))
 
 			
-			v.x=recenter(v.x, stick_recenterSpeed, offsetSteer_x)
-			v.y=recenter(v.y, stick_recenterSpeed, offsetSteer_y)
+			v.x=recenter(v.x, settings_profile["stick_recenterSpeed"], settings_profile["offsetSteer_x"])
+			v.y=recenter(v.y, settings_profile["stick_recenterSpeed"], settings_profile["offsetSteer_y"])
 
 
 		#firing modes
@@ -192,15 +176,15 @@ if is_window_active(window_name):
 		freeLook = False
 		stickSteering = True
 		
-		steering_x=offsetSteer_x
-		steering_y=offsetSteer_y
+		steering_x=settings_profile["offsetSteer_x"]
+		steering_y=settings_profile["offsetSteer_y"]
 
 	if keyboard.getPressed(Key.F10) or keyboard.getPressed(Key.Escape):
 		active = not active
 
 	if keyboard.getPressed(Key.F1):
-		steering_x=offsetSteer_x
-		steering_y=offsetSteer_y
+		steering_x=settings_profile["offsetSteer_x"]
+		steering_y=settings_profile["offsetSteer_y"]
 		active = True
         
 	if keyboard.getKeyDown(Key.NumberPad5):

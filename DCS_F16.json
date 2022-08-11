@@ -5,7 +5,7 @@
     "offsetSteer_x": 0,
     "offsetSteer_y": 350,
     "offsetLook_x": 0,
-    "offsetLook_y": 0,
+    "offsetLook_y": 300,
     "stick_recenterSpeed": 30,
     "look_recenterSpeed": 130,
     "DeviceNumber": 0,
